@@ -1,0 +1,37 @@
+<div class="container">
+    <div class="store-header">
+        <ul uib-pagination total-items="bigTotalItems" items-per-page="12" ng-model="bigCurrentPage" max-size="maxSize" class="pagination-sm" boundary-links="true" last-text=">>" next-text=">" first-text="<<" previous-text="<"></ul>
+    </div>
+    <button class="btn btn-info btn-sm">Confirm</button>
+</div>
+
+<div class="container">
+    <div class="totalPrice col-xs-12">
+        <span ng-if="totalBought"><i class="fa fa-truck" aria-hidden="true"></i>&nbsp;{{totalBought|currency}}</span>
+        <select ng-options="item as item.label for item in sortItems track by item.id" ng-model="search.sort" ng-change="sortOptionChanged()"></select>
+    </div>
+</div>
+
+<div class="container">
+    <div class="col-md-3 col-sm-3 col-xs-6 product" ng-repeat="product in filtered = products | orderBy : opt1 | startFrom:(bigCurrentPage-1)*entryLimit | limitTo:entryLimit" current-page="currentPage">
+    	<div class="col table-responsive">
+    		<div ng-if="product.promo"><span class="promo">Rabais</span></div>
+    			<img src="{{product.image}}" height="80" alt="{{product.name}}">
+				<p>{{product.name}}</p>  
+                <table class="table">
+                    <tr>
+                    <span ng-if="product.promo"><price1>{{product.price | currency}}</price1></span>
+	       			<price_last>{{(product.price-product.promo) | currency}}</price_last>  
+                    </tr>
+                    <tr>
+					<td><a class="btn-circle" ng-click="oneDown(product._id)"><i class="fa fa-chevron-down" aria-hidden="true"></i></a></td>
+                    <td><span class="buy-no" ng-if="product.no">{{product.no}}</span></td>
+					<td><a class="btn-circle" ng-click="oneUp(product._id)"><i class="fa fa-chevron-up" aria-hidden="true"></i></a></td>
+                    </tr>
+				</table>
+    		</div>
+        </div>
+    </div>
+</div>
+
+
