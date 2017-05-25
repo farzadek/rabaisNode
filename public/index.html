@@ -8,7 +8,6 @@
     <meta name="author" content="">
     <title>Rabais.EIP - construction products online</title>
     <link href="css/landing-page.css" rel="stylesheet"> 
-    <link href="css/style.css" rel="stylesheet"> 
     <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
     <!--[if lt IE 9]>
@@ -17,13 +16,54 @@
     <![endif]-->
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular.js"></script>
     <script src="https://angular-ui.github.io/bootstrap/ui-bootstrap-tpls-2.5.0.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <link href="https://netdna.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://netdna.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 	<script src="controller/controller.js"></script>
 	<link rel="icon" href="img/exterior.png">
+    <link href="css/landing-page.css" rel="stylesheet"> 
+    <link href="css/style.css" rel="stylesheet"> 
+
+    <script src="https://apis.google.com/js/client.js"></script>
 </head>
 <body>
 <div ng-controller="appCtrl">
+    <script>
+        /* <google login */
+        function googleLoginLoad(){
+            gapi.client.setApiKey('AIzaSyCYkCMcrVFKHp4MHerjkxot1r4VZb_2WXM');
+            gapi.client.load('plus','v2', function(){});
+        }
 
+        var p = document.createElement('script');
+        p.type = 'text/javascript';
+        p.async = true;
+        p.src = 'https://apis.google.com/js/client.js?onload=googleLoginLoad';
+        var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(p,s);
+        /* google login> */
+
+        /* <facebook login */
+        window.fbAsyncInit = function() {
+            FB.init({
+            appId      : '1684330261869795',
+            cookie     : true,
+            xfbml      : true,
+            version    : 'v2.8'
+            });
+            FB.AppEvents.logPageView();   
+        };
+
+        (function(d, s, id){
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) {return;}
+            js = d.createElement(s); js.id = id;
+            js.src = "//connect.facebook.net/en_US/sdk.js";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
+        /* facebook login>*/ 
+    </script>
+        
     <nav class="navbar navbar-default navbar-fixed-top topnav" role="navigation">
         <div class="container topnav">
 
@@ -35,7 +75,7 @@
                 <span class="icon-bar"></span>
                 </button>
                 <section id="userLogin">
-					<h5><span ng-show="userLoggedIn">Hi <span id="titleUname">{{user.name}}</span></span>
+					<h5><span ng-show="userLoggedIn">Hi&nbsp;<span id="titleUname">{{user.name}}&nbsp;</span></span>
 					<button id="loginModalButton" type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#loginModal" ng-click="logout()">{{loginText}}</button>
 					<button id="registerModalButton" ng-show="!userLoggedIn" type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#registerModal" ng-click="registerUser()">Register</button>
 					</h5>
@@ -78,10 +118,17 @@
 
 									</fieldset>
 									</form>
-
+                                    <div id="gSignIn"></div>
+                                    <div class="userContent"></div>
 					      		</div>
 								<div class="modal-footer">
-					      		<p style="color:red;" ng-show="userFound">User Not Found!</p>
+					      		    <p style="color:red;" ng-show="userFound">User Not Found!</p>
+                                    <button class="btn btn-social btn-google" ng-click="loginWithGoogle()">
+                                        <span class="fa fa-google"></span> Sign in with Google
+                                    </button>
+                                    <button class="btn btn-social btn-facebook" ng-click="loginWithFb()">
+                                        <span class="fa fa-facebook"></span> Sign in with Facebook
+                                    </button>
 					      		</div>
 					    	</div>
 
@@ -327,8 +374,6 @@
         </div>
     </footer>
 
-    <!-- jQuery -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 </div>
 </body>
 </html>

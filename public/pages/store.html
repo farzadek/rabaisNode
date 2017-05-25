@@ -16,7 +16,7 @@
     <div class="col-md-3 col-sm-3 col-xs-6 product" ng-repeat="product in filtered = products | orderBy : opt1 | startFrom:(bigCurrentPage-1)*entryLimit | limitTo:entryLimit" current-page="currentPage">
     	<div class="col table-responsive">
     		<div ng-if="product.promo"><span class="promo">Rabais</span></div>
-    			<img src="{{product.image}}" height="80" alt="{{product.name}}">
+    			<img ng-src="{{product.image}}" height="80" alt="{{product.name}}">
 				<p>{{product.name}}</p>  
                 <table class="table">
                     <tr>

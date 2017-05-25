@@ -22,6 +22,12 @@ app.controller('appCtrl', function($scope, $http) {
 	$scope.usernameOk = false;
 	$scope.totalBought = 0;
     $scope.search = {};
+	$scope.user = {
+		'username' : '',
+		'name' : '',
+		'password' : '',
+		'email' : ''
+	};
 
     $scope.sortItems = [
         {id:1, label:'Name (A-Z)', subItem:{name:'name'}},
@@ -35,6 +41,61 @@ app.controller('appCtrl', function($scope, $http) {
     $scope.sortOptionChanged = function(){
         $scope.opt1 = $scope.search.sort.subItem.name;
     }
+
+	$scope.loginWithGoogle = function(){
+		gapi.client.load('plus', 'v1',function(){});
+		param = {
+			'clientid':'260490331032-cbpkp4b0dh1602n3ihpndb4c28o2gshl.apps.googleusercontent.com',
+			'cookiepolicy':'single_host_origin',
+			'callback':function(result){
+				if(result['status']['signed_in']){
+					var req = gapi.client.plus.people.get({'userId': 'me'});
+					req.execute(function(res){
+						$scope.$apply(function(){
+							$scope.user.name = res.displayName;
+							$scope.user.level = "User";
+							$scope.loginText = 'Logout';
+							$scope.userLoggedIn = true;
+							$scope.mainPage = false;
+							$scope.userFound = false;
+							$('#loginModal').modal('hide');
+							$('#loginModalButton').removeClass('btn-sm').addClass('btn-xs');
+							$scope.user.password = '';
+							$scope.user.email = res.emails[0].value;
+						});
+					});
+				}
+			},
+			'approvalprompt':'force',
+			'scope':'https://www.googleapis.com/auth/plus.login https://www.googleapis.com/auth/plus.profile.emails.read'
+		};
+		gapi.auth.signIn(param);
+	}
+
+	$scope.loginWithFb = function(){
+
+		FB.login(function(res){
+			if(res.authResponse){
+				FB.api('/me', 'GET', {fields: 'email, name'}, function(res){
+					$scope.$apply(function(){
+						$scope.user.name = res.name;
+						$scope.user.level = "User";
+						$scope.loginText = 'Logout';
+						$scope.userLoggedIn = true;
+						$scope.mainPage = false;
+						$scope.userFound = false;
+						$('#loginModal').modal('hide');
+						$('#loginModalButton').removeClass('btn-sm').addClass('btn-xs');
+						$scope.user.password = '';
+						$scope.user.email = res.email;
+					}); 
+				});
+			}
+			else{
+				console.log(' NOT authorized!');
+			}
+		},{scope:'email', return_scopes:true});
+	}
 
 	$http.get('/').then(function(res) { /*$scope.mainPage = true;*/});
 
@@ -74,14 +135,14 @@ app.controller('appCtrl', function($scope, $http) {
 								
 							},
 							function errorCallback(res) {
-								console.log(res);
+								console.log('error submitRegForm1: '+res);
 							}
 						)
 					} 
 				}
 			}, 
 			function errorCallback(res) {
-				console.log(res);
+				console.log('error submitRegForm2: '+res);
 			}
 		);
 	}
