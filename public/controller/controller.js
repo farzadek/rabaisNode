@@ -9,6 +9,11 @@ app.filter('startFrom', function () {
         return [];
     };
 });
+app.filter('capitalize', function() {
+    return function(input) {
+      return (!!input) ? input.charAt(0).toUpperCase() + input.substr(1).toLowerCase() : '';
+    }
+});
 
 app.controller('appCtrl', function($scope, $http) {
 
@@ -22,6 +27,14 @@ app.controller('appCtrl', function($scope, $http) {
 	$scope.usernameOk = false;
 	$scope.totalBought = 0;
     $scope.search = {};
+	//$scope.bought = [];
+	$scope.bill = {
+		clientName : '',
+		clientEmail : '',
+		items:[],
+		buyDate: ''
+	};
+	$scope.TotalBought = 0;
 	$scope.user = {
 		'username' : '',
 		'name' : '',
@@ -132,7 +145,6 @@ app.controller('appCtrl', function($scope, $http) {
 								$scope.user.username = '';
 								$scope.user.name = '';
 								$scope.user.password = '';
-								
 							},
 							function errorCallback(res) {
 								console.log('error submitRegForm1: '+res);
@@ -179,7 +191,24 @@ app.controller('appCtrl', function($scope, $http) {
 		$scope.showStore = false;
 		$('#loginModalButton').removeClass('btn-xs').addClass('btn-sm');
 	}
-/* tasks ------------------------------------------------- */
+
+/* Order confirmation ------------------------------------------------- */
+	$scope.orderConfirmed = function(){
+		$scope.totalBought = 0;
+		$scope.bill = {
+			clientName : $scope.user.name,
+			clientEmail : $scope.user.email,
+			items:[],
+			buyDate: new Date()
+		};
+		$scope.products.forEach(function(element) {
+			if(element.no){
+				$scope.bill.items.push(element);
+				$scope.totalBought += (element.price-element.promo)*element.no;
+			}			
+		}, this);
+	}
+/* read products in fo from db ------------------------------------------------- */
 	function refresh(){
 		$http.get('/products').then(
 			function(res) { 
@@ -189,81 +218,5 @@ app.controller('appCtrl', function($scope, $http) {
 	}
 
 	refresh();
-/*
-		$scope.addPerson = function(){
-			if(edit){
-				edit = false;
-				$http.put('/persons/'+personId, $scope.person).then(
-	       			function(res){refresh();$scope.person={};personId="";},
-	       			function(res){console.log('error in EDIT');}
-	    		);
-			}
-			else{
-				$http.post('/persons', $scope.person).then(
-	       			function(res){refresh();$scope.person={};},
-	       			function(res){console.log('error in NEW');}
-	    		);
-			}
-		}
 
-		$scope.remove = function(id){
-			$http.delete('/persons/'+id).then(
-       			function(res){refresh();},
-       			function(res){console.log('No delete');}
-    		); 
-		}
-
-		$scope.edit = function(id){
-			edit = true;
-			$http.get('/persons/'+id).then(
-       			function(res){refresh();personId = id;$scope.person = res.data;},
-       			function(res){console.log('Noo del');}
-    		); 
-		}
-*/
-
-
-
-/*
-
-	function refresh(){
-		$http.get('/persons').then(
-			function(usersResponse) { $scope.persons = usersResponse.data;}
-		);
-	}
-
-	refresh();
-
-		$scope.addPerson = function(){
-			if(edit){
-				edit = false;
-				$http.put('/persons/'+personId, $scope.person).then(
-	       			function(res){refresh();$scope.person={};personId="";},
-	       			function(res){console.log('error in EDIT');}
-	    		);
-			}
-			else{
-				$http.post('/persons', $scope.person).then(
-	       			function(res){refresh();$scope.person={};},
-	       			function(res){console.log('error in NEW');}
-	    		);
-			}
-		}
-
-		$scope.remove = function(id){
-			$http.delete('/persons/'+id).then(
-       			function(res){refresh();},
-       			function(res){console.log('No delete');}
-    		); 
-		}
-
-		$scope.edit = function(id){
-			edit = true;
-			$http.get('/persons/'+id).then(
-       			function(res){refresh();personId = id;$scope.person = res.data;},
-       			function(res){console.log('Noo del');}
-    		); 
-		}
-
-*/
-	});
+});
