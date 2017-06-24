@@ -10,6 +10,9 @@
   "keywords": [
     "rest"
   ],
+   "engines": {
+    "node": "6.10.3"
+  },
   "author": "farzad",
   "license": "ISC",
   "dependencies": {
